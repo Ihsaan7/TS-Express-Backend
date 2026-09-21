@@ -1,4 +1,5 @@
 import { Request , Response } from "express";
+import { ApiError } from "../utils/ApiError.js";
 
 
 // ========== INTERFACES (Contracts) ==========
@@ -47,7 +48,7 @@ export const getProducts = (
                 return res.status(200).json(
                     {
                         success:true,
-                        const: filtered.length,
+                        count: filtered.length,
                         data:filtered
                     })
             }
@@ -68,15 +69,18 @@ export const getProductById = (
 
         if(isNaN(productId))
             {
-                return res.status(400).json({  success: true , message:"Invalid product ID parameter"})
+                throw new ApiError(400 , "Invalid Product Id parameter")
             }
         
         const product = products.find((p)=> p.id === productId)
-        if(!product){ return res.status(404).json({ success: true , message:"Product not found!"})}
+        if(!product)
+            { 
+                throw new ApiError(404 ,"Product not found")
+            }
 
         return res.status(200).json(
             {
-                success: false,
+                success: true,
                 data: product
             })
     }
@@ -87,13 +91,14 @@ export const createProduct = (
 ): Response=>
     {
         const { title , price , inStock } = req.body;
+        const errors: string[] = [];
 
-        if(!title || price === undefined || price === null){
-            return res.status(400).json(
-                {
-                    success:false,
-                    message:"Title and Price both are required!"
-                })
+        if(!title) errors.push("Title is required!")
+        if(price === undefined || price === null) errors.push("Price is required!")
+        if(price !== undefined && price < 0) errors.push("Price must be positive")
+
+        if(errors.length > 0){
+            throw new ApiError(400 , "Validation Failed", errors)
         }
 
         const newProduct: Product=
