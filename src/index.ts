@@ -1,1 +1,10 @@
-console.log("TypeScript is working!");
+import app from "./app.js";
+
+
+const PORT = 8000
+
+app.listen(PORT, ()=>
+    {
+         console.log(`🚀 TypeScript Express Server running on http://localhost:${PORT}`);
+});
+  
