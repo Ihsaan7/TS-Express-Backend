@@ -3,8 +3,8 @@ import { ApiError } from "../utils/ApiError.js";
 
 export const errorHandler=(
     err: Error,
-    res: Response,
     req: Request,
+    res: Response,
     next: NextFunction
 ): void=>
     {

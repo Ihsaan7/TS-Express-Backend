@@ -1,6 +1,7 @@
 import express, { Request , Response } from "express"
 import cors from "cors"
 import  { requestLogger } from "./middlewares/logger.middleware.js"
+import { errorHandler } from "./middlewares/error.middleware.js";
 import productRoute from "./routes/product.route.js"
 
 const app = express()
@@ -29,5 +30,8 @@ app.use((req: Request , res:Response)=>
             message:`Route ${req.originalUrl} not found on this server`
         })
     })
+// Error handler (MUST be LAST — has 4 params)
+app.use(errorHandler);
+
 
 export default app
